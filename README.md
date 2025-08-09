@@ -1,69 +1,88 @@
-# React + TypeScript + Vite
+# 🧠 TimeBlocker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### 📌 Table of Contents
 
-Currently, two official plugins are available:
+Project Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Features
 
-## Expanding the ESLint configuration
+Technologies Used
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Installation
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Usage
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+Contributing
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+License
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📖 Project Overview
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+TimeBlocker is a web application designed to help users manage their time effectively by structuring work sessions into focused intervals. Inspired by the Pomodoro Technique, it allows users to select predefined time blocks for focus, breaks, and planning, enhancing productivity and task management.
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 🚀 Features
+
+Customizable Time Blocks: Choose from predefined blocks like "Deep Focus," "Active Break," and "Planning."
+
+Interactive Interface: Select and deselect time blocks with a user-friendly interface.
+
+Visual Indicators: Clear visual cues for selected and active blocks.
+
+Responsive Design: Optimized for both desktop and mobile devices.
+
+### 🛠️ Technologies Used
+
+Frontend: React, TypeScript
+
+Icons: Lucide Icons
+
+Styling: Tailwind CSS
+
+State Management: React useState Hook
+
+### 📥 Installation
+
+Clone the repository:
+
+bash
+Copier
+Modifier
+git clone https://github.com/benidama/time_mgmt_tracker_solvit.git
+cd timeblocker
+Install dependencies:
+
+bash
+Copier
+Modifier
+npm install
+Start the development server:
+
+bash
+Copier
+Modifier
+npm start
+The application will be running at http://localhost:5173/.
+
+### 🧭 Usage
+
+Upon launching the application, you'll see a list of available time blocks. Click on a block to select it; click again to deselect. The selected block will be highlighted, and its details will be displayed.
+
+### 🤝 Contributing
+
+We welcome contributions! To contribute:
+
+Fork the repository.
+
+Create a new branch (git checkout -b feature-name).
+
+Make your changes.
+
+Commit your changes (git commit -am 'Add new feature').
+
+Push to the branch (git push origin feature-name).
+
+Create a new Pull Request.
+
+##### 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
