@@ -5,7 +5,7 @@ import {
   Target,
   TrendingUp,
 } from "lucide-react";
-import type { SessionData } from "../App";
+import type { SessionData } from "../types";
 
 interface SessionFeedbackProps {
   sessionData: SessionData[];

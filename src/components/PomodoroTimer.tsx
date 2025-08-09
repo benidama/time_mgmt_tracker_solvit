@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Play, Pause, RotateCcw, Settings } from "lucide-react";
 
 interface PomodoroTimerProps {
@@ -23,43 +23,17 @@ export function PomodoroTimer({
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    if (isRunning && timeLeft > 0) {
-      intervalRef.current = setInterval(() => {
-        setTimeLeft((prev) => {
-          if (prev <= 1) {
-            handleTimerComplete();
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    } else {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    }
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [isRunning, timeLeft]);
-
-  const handleTimerComplete = () => {
+  const handleTimerComplete = useCallback(() => {
     setIsRunning(false);
 
-    if (!notificationsMuted) {
-      if (Notification.permission === "granted") {
-        new Notification(
-          isBreak ? "Break time is over!" : "Focus session complete!",
-          {
-            body: isBreak ? "Ready to focus again?" : "Time for a break!",
-            icon: "/favicon.ico",
-          }
-        );
-      }
+    if (!notificationsMuted && Notification.permission === "granted") {
+      new Notification(
+        isBreak ? "Break time is over!" : "Focus session complete!",
+        {
+          body: isBreak ? "Ready to focus again?" : "Time for a break!",
+          icon: "/favicon.ico",
+        }
+      );
     }
 
     if (!isBreak) {
@@ -71,7 +45,29 @@ export function PomodoroTimer({
       setIsBreak(false);
       setTimeLeft(focusTime * 60);
     }
-  };
+  }, [isBreak, notificationsMuted, focusTime, breakTime]);
+
+  useEffect(() => {
+    if (isRunning && timeLeft > 0) {
+      intervalRef.current = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            handleTimerComplete();
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isRunning, timeLeft, handleTimerComplete]);
 
   const startTimer = () => {
     if (
@@ -83,9 +79,7 @@ export function PomodoroTimer({
     setIsRunning(true);
   };
 
-  const pauseTimer = () => {
-    setIsRunning(false);
-  };
+  const pauseTimer = () => setIsRunning(false);
 
   const resetTimer = () => {
     setIsRunning(false);
@@ -117,8 +111,10 @@ export function PomodoroTimer({
 
   return (
     <div className="space-y-6">
+      {/* Timer Circle and Display */}
       <div className="text-center">
         <div className="relative w-48 h-48 mx-auto mb-4">
+          {/* SVG progress circle */}
           <svg
             className="w-full h-full transform -rotate-90"
             viewBox="0 0 100 100"
@@ -169,6 +165,7 @@ export function PomodoroTimer({
         </div>
       </div>
 
+      {/* Controls */}
       <div className="flex justify-center gap-2">
         <button
           onClick={isRunning ? pauseTimer : startTimer}
@@ -187,19 +184,19 @@ export function PomodoroTimer({
         </button>
         <button
           onClick={resetTimer}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
         >
-          <RotateCcw className="w-4 h-4" />
-          Reset
+          <RotateCcw className="w-4 h-4" /> Reset
         </button>
         <button
           onClick={() => setShowSettings(!showSettings)}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
         >
-          <Settings className="w-4 h-4" />
+          <Settings className="w-4 h-4" /> Settings
         </button>
       </div>
 
+      {/* Settings Panel */}
       {showSettings && (
         <div className="bg-gray-50 rounded-lg p-4 space-y-4">
           <div className="grid grid-cols-2 gap-4">
@@ -215,11 +212,9 @@ export function PomodoroTimer({
                 type="number"
                 value={focusTime}
                 onChange={(e) => {
-                  const value = Number.parseInt(e.target.value);
+                  const value = parseInt(e.target.value, 10);
                   setFocusTime(value);
-                  if (!isBreak && !isRunning) {
-                    setTimeLeft(value * 60);
-                  }
+                  if (!isBreak && !isRunning) setTimeLeft(value * 60);
                 }}
                 min="1"
                 max="60"
@@ -238,11 +233,9 @@ export function PomodoroTimer({
                 type="number"
                 value={breakTime}
                 onChange={(e) => {
-                  const value = Number.parseInt(e.target.value);
+                  const value = parseInt(e.target.value, 10);
                   setBreakTime(value);
-                  if (isBreak && !isRunning) {
-                    setTimeLeft(value * 60);
-                  }
+                  if (isBreak && !isRunning) setTimeLeft(value * 60);
                 }}
                 min="1"
                 max="30"
@@ -253,6 +246,7 @@ export function PomodoroTimer({
         </div>
       )}
 
+      {/* Stats */}
       <div className="text-center space-y-2">
         <p className="text-sm text-gray-600">
           Sessions completed today:{" "}
@@ -265,7 +259,7 @@ export function PomodoroTimer({
         {sessionsCompleted > 0 && (
           <button
             onClick={completeSession}
-            className="px-4 py-2 text-sm border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            className="px-4 py-2 text-sm border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50"
           >
             Complete Session & Save Progress
           </button>

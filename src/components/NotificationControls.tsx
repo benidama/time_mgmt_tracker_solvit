@@ -4,8 +4,8 @@ import { useState, useEffect } from "react"
 import { Bell, BellOff, Smartphone, Volume2, VolumeX } from "lucide-react"
 
 interface NotificationControlsProps {
-  muted: boolean
-  onToggle: (muted: boolean) => void
+  muted: boolean;
+  onToggle: (muted: boolean) => void;
 }
 
 export function NotificationControls({ muted, onToggle }: NotificationControlsProps) {

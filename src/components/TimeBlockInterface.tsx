@@ -1,17 +1,8 @@
 "use client";
 
-import type React from "react";
 import { useState } from "react";
+import type { TimeBlock } from "../types";
 import { Clock, Coffee, Brain } from "lucide-react";
-
-interface TimeBlock {
-  id: string;
-  name: string;
-  type: "focus" | "break" | "planning";
-  duration: number;
-  description: string;
-  icon: React.ReactNode;
-}
 
 const timeBlocks: TimeBlock[] = [
   {
@@ -21,6 +12,8 @@ const timeBlocks: TimeBlock[] = [
     duration: 25,
     description: "Concentrated work on important tasks",
     icon: <Brain className="w-5 h-5" />,
+    tasks: [],
+    completed: false,
   },
   {
     id: "break",
@@ -29,6 +22,8 @@ const timeBlocks: TimeBlock[] = [
     duration: 5,
     description: "Rest and recharge",
     icon: <Coffee className="w-5 h-5" />,
+    tasks: [],
+    completed: false,
   },
   {
     id: "planning",
@@ -37,6 +32,8 @@ const timeBlocks: TimeBlock[] = [
     duration: 15,
     description: "Organize and prioritize upcoming work",
     icon: <Clock className="w-5 h-5" />,
+    tasks: [],
+    completed: false,
   },
 ];
 
@@ -45,15 +42,18 @@ interface TimeBlockInterfaceProps {
   currentBlock: TimeBlock | null;
 }
 
-export function TimeBlockInterface({ onBlockSelect }: TimeBlockInterfaceProps) {
-  const [selectedBlock, setSelectedBlock] = useState<string | null>(null);
+export function TimeBlockInterface({
+  onBlockSelect,
+}: // currentBlock,
+TimeBlockInterfaceProps) {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const handleBlockSelect = (block: TimeBlock) => {
-    if (selectedBlock === block.id) {
-      setSelectedBlock(null);
+    if (selectedId === block.id) {
+      setSelectedId(null);
       onBlockSelect(null);
     } else {
-      setSelectedBlock(block.id);
+      setSelectedId(block.id);
       onBlockSelect(block);
     }
   };
@@ -96,9 +96,7 @@ export function TimeBlockInterface({ onBlockSelect }: TimeBlockInterfaceProps) {
           className={`cursor-pointer transition-all duration-200 border rounded-lg p-4 ${getBlockColor(
             block.type
           )} ${
-            selectedBlock === block.id
-              ? "ring-2 ring-offset-2 ring-blue-500"
-              : ""
+            selectedId === block.id ? "ring-2 ring-offset-2 ring-blue-500" : ""
           }`}
           onClick={() => handleBlockSelect(block)}
         >
@@ -118,7 +116,7 @@ export function TimeBlockInterface({ onBlockSelect }: TimeBlockInterfaceProps) {
               >
                 {block.duration} min
               </span>
-              {selectedBlock === block.id && (
+              {selectedId === block.id && (
                 <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                   Selected
                 </span>
@@ -128,11 +126,11 @@ export function TimeBlockInterface({ onBlockSelect }: TimeBlockInterfaceProps) {
         </div>
       ))}
 
-      {selectedBlock && (
+      {selectedId && (
         <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
           <p className="text-sm text-blue-800">
             <strong>Active Block:</strong>{" "}
-            {timeBlocks.find((b) => b.id === selectedBlock)?.name}
+            {timeBlocks.find((b) => b.id === selectedId)?.name}
           </p>
         </div>
       )}
